@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-mmi-client'
+  labels:
+    katenary.io/component: mmi-client
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: mmi-client
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: mmi-client
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      containers:
+        - name: mmi-client
+          image: '{{ .Values.mmi_client.repository.image }}{{ if ne .Values.mmi_client.repository.tag "" }}:{{ .Values.mmi_client.repository.tag }}{{ end }}'
+          ports:
+            - name: mmi-client
+              containerPort: 8000
+          env:
+            - name: MMI_CLIENT_ID
+              value: '{{ tpl .Values.mmi_client.environment.MMI_CLIENT_ID . }}'
+            - name: MMI_CLIENT_SECRET
+              value: '{{ tpl .Values.mmi_client.environment.MMI_CLIENT_SECRET . }}'
+            - name: MMI_ADVANCE_API_KEY
+              value: '{{ tpl .Values.mmi_client.environment.MMI_ADVANCE_API_KEY . }}'
+            - name: KNOWLARITY_NUMBER
+              value: '{{ tpl .Values.mmi_client.environment.KNOWLARITY_NUMBER . }}'
+            - name: KNOWLARITY_AGENT_NUMBER
+              value: '{{ tpl .Values.mmi_client.environment.KNOWLARITY_AGENT_NUMBER . }}'
+            - name: KNOWLARITY_API_KEY
+              value: '{{ tpl .Values.mmi_client.environment.KNOWLARITY_API_KEY . }}'
+            - name: KNOWLARITY_AUTHORIZATION_HEADER_KEY
+              value: '{{ tpl .Values.mmi_client.environment.KNOWLARITY_AUTHORIZATION_HEADER_KEY . }}'
+            - name: ENV
+              value: '{{ tpl .Values.mmi_client.environment.ENV . }}'
+

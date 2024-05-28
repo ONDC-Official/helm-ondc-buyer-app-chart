@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-biap-client-node-js'
+  labels:
+    katenary.io/component: biap-client-node-js
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: biap-client-node-js
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: biap-client-node-js
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      initContainers:
+        - name: check-mongo
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking mongo port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-mongo 27017 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+      containers:
+        - name: biap-client-node-js
+          image: '{{ .Values.biap_client_node_js.repository.image }}{{ if ne .Values.biap_client_node_js.repository.tag "" }}:{{ .Values.biap_client_node_js.repository.tag }}{{ end }}'
+          ports:
+            - name: biap-client-node-js
+              containerPort: 3000
+

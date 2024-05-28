@@ -1,0 +1,27 @@
+# Create on 2024-05-07T08:38:21Z
+# Katenary command line: katenary convert -c docker-compose.yml
+apiVersion: v2
+appVersion: 0.0.1
+description: A helm chart for buyer app
+name: ondc_buyer_app
+type: application
+version: 0.1.0
+
+# dependencies: on mongodb, redis, rabbitmq, elasticsearch
+dependencies:
+  - name: community-operator
+    version: "0.9.0"
+    repository: "https://mongodb.github.io/helm-charts"
+    alias: mongodb
+  - name: redis-operator
+    version: "3.2.9"
+    repository: "https://spotahome.github.io/redis-operator"
+    alias: redis
+  - name: rabbitmq-cluster-operator
+    version: "4.3.1"
+    repository: "https://charts.bitnami.com/bitnami/"
+    alias: rabbitmq
+  - name: eck-operator
+    version: "2.9.0"
+    repository: "https://helm.elastic.co/"
+    alias: elasticsearch

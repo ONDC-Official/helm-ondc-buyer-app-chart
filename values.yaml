@@ -1,0 +1,145 @@
+#biap-client-node-js:
+#  repository:
+#    image: navdeep710/client-js-node
+#    tag: ""
+#biap-igm-node-js:
+#  environment:
+#    BAP_ID: ""
+#    BAP_URL: ""
+#    BUGZILLA_API_KEY: ""
+#    BUGZILLA_SERVICE_URI: ""
+#    COUNTRY: ""
+#    DB_CONNECTION_STRING: ""
+#    DOMAIN: ""
+#    EXPECTED_RESOLUTION_TIME: ""
+#    EXPECTED_RESPONSE_TIME: ""
+#    PROTOCOL_BASE_URL: ""
+#    SSE_TIMEOUT: ""
+#    VOLUME_IMAGES_BASE_URL: ""
+#  repository:
+#    image: navdeep710/biap-igm-node-js
+#    tag: ""
+#
+#mmi-client:
+#  environment:
+#    ENV: prod
+#    KNOWLARITY_AGENT_NUMBER: ""
+#    KNOWLARITY_API_KEY: ""
+#    KNOWLARITY_AUTHORIZATION_HEADER_KEY: ""
+#    KNOWLARITY_NUMBER: ""
+#    MMI_ADVANCE_API_KEY: ""
+#    MMI_CLIENT_ID: ""
+#    MMI_CLIENT_SECRET: ""
+#  repository:
+#    image: navdeep710/ondc-ancillary-services
+#    tag: v3
+#
+#nginx:
+#  environment:
+#    REACT_APP_BASE_URL: ""
+#    REACT_APP_FIREBASE_API_KEY: ""
+#    REACT_APP_FIREBASE_AUTH_DOMAIN: ""
+#    REACT_APP_GOOGLE_API_KEY: ""
+#    REACT_APP_MMI_BASE_URL: ""
+#  repository:
+#    image: navdeep710/ondc-nginx
+#    tag: ""
+py_ondc_protocol:
+  environment:
+    BAP_ID: ""
+    BAP_PRIVATE_KEY: ""
+    BAP_PUBLIC_KEY: ""
+    BAP_UNIQUE_KEY_ID: ""
+    BAP_URL: ""
+    CLIENT_WEBHOOK_ENDPOINT: ""
+    ENV: ""
+    EXPECTED_RESPONSE_TIME: ""
+    FLASK_SERVER: "True"
+    MONGO_DATABASE_URL: ""
+    QUEUE_ENABLE: "True"
+    RABBITMQ_HOST: ""
+    VERIFICATION_ENABLE: ""
+  repository:
+    image: "navdeep710/py-ondc-protocol"
+    tag: latest
+#py-protocol-consumer:
+#  environment:
+#    BAP_ID: ""
+#    BAP_PRIVATE_KEY: ""
+#    BAP_PUBLIC_KEY: ""
+#    BAP_UNIQUE_KEY_ID: ""
+#    CONSUMER_MAX_WORKERS: "8"
+#    ENV: ""
+#    FLASK_SERVER: "False"
+#    MONGO_DATABASE_URL: ""
+#    RABBITMQ_HOST: ""
+#  repository:
+#    image: navdeep710/py-protocol-consumer
+#    tag: latest
+#
+mongodb:
+  enabled: true
+  name: "buyer-app-mongodb"
+  namespace: "ondc-prod-prod"
+  version: "6.0.5"
+  # Configuration for MongoDB operator
+  fullnameOverride: community-operator
+  replicaCount: 2
+  password: "password"
+  image:
+    repository: "mongo"
+    tag: "6.0.5"
+  storage:
+    size: "100Gi"
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+redis:
+  enabled: true
+  namespace: "ondc-prod-prod"
+  # Configuration for Redis operator
+  fullnameOverride: redis-operator
+  replicaCount: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+rabbitmq:
+  enabled: true
+  # Configuration for RabbitMQ operator
+  fullnameOverride: rabbitmq-cluster-operator
+  namespace: "ondc-prod-prod"
+  replicaCount: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+elasticsearch:
+  enabled: true
+  # Configuration for Elasticsearch operator
+  fullnameOverride: elastic-operator
+  replicaCount: 1
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1"
+
+
+global:
+  namespace: "ondc-prod-prod"

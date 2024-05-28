@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-biap-igm-node-js'
+  labels:
+    katenary.io/component: biap-igm-node-js
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: biap-igm-node-js
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: biap-igm-node-js
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      initContainers:
+        - name: check-mongo1
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking mongo1 port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-mongo1 27017 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+      containers:
+        - name: biap-igm-node-js
+          image: '{{ .Values.biap_igm_node_js.repository.image }}{{ if ne .Values.biap_igm_node_js.repository.tag "" }}:{{ .Values.biap_igm_node_js.repository.tag }}{{ end }}'
+          ports:
+            - name: biap-igm-node-js
+              containerPort: 8989
+          env:
+            - name: BAP_ID
+              value: '{{ tpl .Values.biap_igm_node_js.environment.BAP_ID . }}'
+            - name: BAP_URL
+              value: '{{ tpl .Values.biap_igm_node_js.environment.BAP_URL . }}'
+            - name: BUGZILLA_API_KEY
+              value: '{{ tpl .Values.biap_igm_node_js.environment.BUGZILLA_API_KEY . }}'
+            - name: BUGZILLA_SERVICE_URI
+              value: '{{ tpl .Values.biap_igm_node_js.environment.BUGZILLA_SERVICE_URI . }}'
+            - name: EXPECTED_RESPONSE_TIME
+              value: '{{ tpl .Values.biap_igm_node_js.environment.EXPECTED_RESPONSE_TIME . }}'
+            - name: DB_CONNECTION_STRING
+              value: '{{ tpl .Values.biap_igm_node_js.environment.DB_CONNECTION_STRING . }}'
+            - name: VOLUME_IMAGES_BASE_URL
+              value: '{{ tpl .Values.biap_igm_node_js.environment.VOLUME_IMAGES_BASE_URL . }}'
+            - name: COUNTRY
+              value: '{{ tpl .Values.biap_igm_node_js.environment.COUNTRY . }}'
+            - name: PROTOCOL_BASE_URL
+              value: '{{ tpl .Values.biap_igm_node_js.environment.PROTOCOL_BASE_URL . }}'
+            - name: SSE_TIMEOUT
+              value: '{{ tpl .Values.biap_igm_node_js.environment.SSE_TIMEOUT . }}'
+            - name: EXPECTED_RESOLUTION_TIME
+              value: '{{ tpl .Values.biap_igm_node_js.environment.EXPECTED_RESOLUTION_TIME . }}'
+            - name: DOMAIN
+              value: '{{ tpl .Values.biap_igm_node_js.environment.DOMAIN . }}'
+

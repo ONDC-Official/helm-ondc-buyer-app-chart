@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-bugzilla-dev-service'
+  labels:
+    katenary.io/component: bugzilla-dev-service
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: bugzilla-dev-service
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: bugzilla-dev-service
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      containers:
+        - name: bugzilla-dev-service
+          image: '{{ .Values.bugzilla_dev_service.repository.image }}{{ if ne .Values.bugzilla_dev_service.repository.tag "" }}:{{ .Values.bugzilla_dev_service.repository.tag }}{{ end }}'
+          ports:
+            - name: bugzilla-dev-service
+              containerPort: 80
+            - name: bugzilla-dev-service-5900
+              containerPort: 5900
+          env:
+            - name: BUGZILLA_ADMIN_EMAIL
+              value: '{{ tpl .Values.bugzilla_dev_service.environment.BUGZILLA_ADMIN_EMAIL . }}'
+            - name: BUGZILLA_WWW
+              value: '{{ tpl .Values.bugzilla_dev_service.environment.BUGZILLA_WWW . }}'
+

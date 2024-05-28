@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ .Release.Name }}-bugzilla-dev-service'
+  labels:
+    katenary.io/component: bugzilla-dev-service
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
+    katenary.io/version: 2.0.0-beta2
+spec:
+  selector:
+    katenary.io/component: bugzilla-dev-service
+    katenary.io/release: '{{ .Release.Name }}'
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    - protocol: TCP
+      port: 5900
+      targetPort: 5900

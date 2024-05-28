@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-py-ondc-protocol'
+  labels:
+    katenary.io/component: py-ondc-protocol
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: py-ondc-protocol
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: py-ondc-protocol
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      containers:
+        - name: py-ondc-protocol
+          image: '{{ .Values.py_ondc_protocol.repository.image }}{{ if ne .Values.py_ondc_protocol.repository.tag "" }}:{{ .Values.py_ondc_protocol.repository.tag }}{{ end }}'
+          ports:
+            - name: pyport
+              containerPort: 5555
+          env:
+            - name: FLASK_SERVER
+              value: '{{ tpl .Values.py_ondc_protocol.environment.FLASK_SERVER . }}'
+            - name: RABBITMQ_HOST
+              value: '{{ tpl .Values.py_ondc_protocol.environment.RABBITMQ_HOST . }}'
+            - name: EXPECTED_RESPONSE_TIME
+              value: '{{ tpl .Values.py_ondc_protocol.environment.EXPECTED_RESPONSE_TIME . }}'
+            - name: BAP_ID
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_ID . }}'
+            - name: BAP_UNIQUE_KEY_ID
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_UNIQUE_KEY_ID . }}'
+            - name: QUEUE_ENABLE
+              value: '{{ tpl .Values.py_ondc_protocol.environment.QUEUE_ENABLE . }}'
+            - name: VERIFICATION_ENABLE
+              value: '{{ tpl .Values.py_ondc_protocol.environment.VERIFICATION_ENABLE . }}'
+            - name: BAP_PUBLIC_KEY
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_PUBLIC_KEY . }}'
+            - name: BAP_URL
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_URL . }}'
+            - name: MONGO_DATABASE_URL
+              value: '{{ tpl .Values.py_ondc_protocol.environment.MONGO_DATABASE_URL . }}'
+            - name: ENV
+              value: '{{ tpl .Values.py_ondc_protocol.environment.ENV . }}'
+            - name: BAP_PRIVATE_KEY
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_PRIVATE_KEY . }}'
+            - name: CLIENT_WEBHOOK_ENDPOINT
+              value: '{{ tpl .Values.py_ondc_protocol.environment.CLIENT_WEBHOOK_ENDPOINT . }}'
+
