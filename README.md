@@ -19,7 +19,7 @@ helm install ondc-buyer-app-release . -f values.yaml --namespace ondc-buyer-app-
 mkdir -p charts
 curl -L -o charts/community-operator-0.9.0.tgz https://github.com/mongodb/helm-charts/releases/download/community-operator-0.9.0/community-operator-0.9.0.tgz
 curl -L -o charts/redis-operator-3.2.9.tgz https://github.com/spotahome/redis-operator/releases/download/Chart-3.2.9/redis-operator-3.2.9.tgz
-curl -L -o charts/rabbitmq-cluster-operator-3.10.10.tgz https://charts.bitnami.com/bitnami/rabbitmq-cluster-operator-3.10.10.tgz
+curl -L -o charts/rabbitmq-cluster-operator-4.3.1.tgz https://charts.bitnami.com/bitnami/rabbitmq-cluster-operator-4.3.1.tgz
 curl -L -o charts/eck-operator-2.9.0.tgz https://helm.elastic.co/helm/eck-operator/eck-operator-2.9.0.tgz
 ```
 
