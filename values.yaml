@@ -104,7 +104,9 @@ redis:
   namespace: "ondc-prod-prod"
   # Configuration for Redis operator
   fullnameOverride: redis-operator
-  replicaCount: 1
+  replicas: 1
+  sentinel:
+    replicas: 1
   resources:
     requests:
       memory: "256Mi"
@@ -113,12 +115,19 @@ redis:
       memory: "512Mi"
       cpu: "200m"
 
+#rabbitmq.replicas }}
+#rabbitmq.resources.requests.cpu }}
+#rabbitmq.resources.requests.memory }}
+#rabbitmq.resources.limits.cpu }}
+#rabbitmq.resources.limits.memory }}
+#rabbitmq.persistence.storage }}
+
 rabbitmq:
-  enabled: true
+  enabled: false
   # Configuration for RabbitMQ operator
   fullnameOverride: rabbitmq-cluster-operator
   namespace: "ondc-prod-prod"
-  replicaCount: 1
+  replicas: 1
   resources:
     requests:
       memory: "256Mi"
@@ -126,19 +135,51 @@ rabbitmq:
     limits:
       memory: "512Mi"
       cpu: "200m"
+  persistence:
+    storage: "100Gi"
+
 
 elasticsearch:
   enabled: true
   # Configuration for Elasticsearch operator
   fullnameOverride: elastic-operator
-  replicaCount: 1
-  resources:
-    requests:
-      memory: "1Gi"
-      cpu: "500m"
-    limits:
-      memory: "2Gi"
-      cpu: "1"
+  version: "7.7.0"
+  masterNodesCount: 1
+  dataNodesCount: 2
+  masterNodes:
+    storage:
+      storage: "100Gi"
+      storageClassName: "gp2"
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+  dataNodes:
+    storage:
+      storage: "500Gi"
+      storageClassName: "gp2"
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+  ingestNodesCount: 1
+  ingestNodes:
+    storage:
+      storage: "100Gi"
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+
 
 
 global:

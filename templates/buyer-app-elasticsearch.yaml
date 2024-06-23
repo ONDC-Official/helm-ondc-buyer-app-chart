@@ -1,0 +1,113 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: es-cluster
+spec:
+  version: {{ .Values.elasticsearch.version }}
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  nodeSets:
+    - name: master-nodes
+      count: {{ .Values.elasticsearch.masterNodesCount }}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.masterNodes.storage.storage }}
+            storageClassName: {{ .Values.elasticsearch.masterNodes.storage.storageClassName }}
+      config:
+        node.master: true
+        node.data: false
+        node.ingest: false
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          tolerations:
+            - key: "es-cluster"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: elasticsearch
+              resources:
+                requests:
+                  memory: {{ .Values.elasticsearch.masterNodes.resources.requests.memory }}
+                  cpu: {{ .Values.elasticsearch.masterNodes.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.elasticsearch.masterNodes.resources.limits.memory }}
+                  cpu: {{ .Values.elasticsearch.masterNodes.resources.limits.cpu }}
+    - name: data-nodes
+      count: {{ .Values.elasticsearch.dataNodesCount }}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.dataNodes.storage.storage }}
+            storageClassName: gp2
+      config:
+        node.master: false
+        node.data: true
+        node.ingest: true
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          tolerations:
+            - key: "es-cluster"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: elasticsearch
+              resources:
+                requests:
+                  memory: {{ .Values.elasticsearch.dataNodes.resources.requests.memory }}
+                  cpu: {{ .Values.elasticsearch.dataNodes.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.elasticsearch.dataNodes.resources.limits.memory }}
+                  cpu: {{ .Values.elasticsearch.dataNodes.resources.limits.cpu }}
+    - name: ingest-nodes
+      count: {{ .Values.elasticsearch.ingestNodesCount }}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.ingestNodes.storage.storage }}
+            storageClassName: "gp2"
+      config:
+        node.master: false
+        node.data: false
+        node.ingest: true
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          tolerations:
+            - key: "es-cluster"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: elasticsearch
+              resources:
+                requests:
+                  memory: {{ .Values.elasticsearch.ingestNodes.resources.requests.memory }}
+                  cpu: {{ .Values.elasticsearch.ingestNodes.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.elasticsearch.ingestNodes.resources.limits.memory }}
+                  cpu: {{ .Values.elasticsearch.ingestNodes.resources.limits.cpu }}
+  secureSettings:
+    - secretName: es-secure-settings
+
