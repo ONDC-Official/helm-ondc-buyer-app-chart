@@ -41,3 +41,8 @@ kubectl create secret generic my-mongodb-scram-credentials -n ondc-prod-prod \
   --from-literal=scram-sha-1-salt='cGFzc3dvcmQ=' \
   --from-literal=scram-sha-256-salt='cGFzc3dvcmQ='
 ```
+
+to update the values
+```shell
+ helm upgrade ondc-buyer-app-release . -f values.yaml --namespace ondc-prod-prod
+```
