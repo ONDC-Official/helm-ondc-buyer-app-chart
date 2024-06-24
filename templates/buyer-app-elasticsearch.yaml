@@ -1,3 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: es-secure-settings
+  namespace: {{ .Values.global.namespace }}
+type: Opaque
+data:
+  xpack.security.authc.realms.file.file1.order: MA==
+
+---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
@@ -110,4 +120,6 @@ spec:
                   cpu: {{ .Values.elasticsearch.ingestNodes.resources.limits.cpu }}
   secureSettings:
     - secretName: es-secure-settings
+
+---
 

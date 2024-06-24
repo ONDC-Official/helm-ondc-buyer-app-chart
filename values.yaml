@@ -84,7 +84,7 @@ mongodb:
   version: "6.0.5"
   # Configuration for MongoDB operator
   fullnameOverride: community-operator
-  replicaCount: 2
+  replicaCount: 1
   password: "password"
   image:
     repository: "mongo"
@@ -145,40 +145,40 @@ elasticsearch:
   fullnameOverride: elastic-operator
   version: "7.7.0"
   masterNodesCount: 1
-  dataNodesCount: 2
+  dataNodesCount: 1
   masterNodes:
     storage:
       storage: "100Gi"
       storageClassName: "gp2"
     resources:
       requests:
-        memory: "4Gi"
-        cpu: "1"
+        memory: "2Gi"
+        cpu: "0.5"
       limits:
-        memory: "4Gi"
-        cpu: "2"
+        memory: "2Gi"
+        cpu: "0.5"
   dataNodes:
     storage:
       storage: "500Gi"
       storageClassName: "gp2"
     resources:
       requests:
-        memory: "4Gi"
-        cpu: "1"
+        memory: "2Gi"
+        cpu: "0.5"
       limits:
-        memory: "4Gi"
-        cpu: "2"
+        memory: "2Gi"
+        cpu: "0.5"
   ingestNodesCount: 1
   ingestNodes:
     storage:
       storage: "100Gi"
     resources:
       requests:
-        memory: "4Gi"
-        cpu: "1"
+        memory: "2Gi"
+        cpu: "0.5"
       limits:
-        memory: "4Gi"
-        cpu: "2"
+        memory: "2Gi"
+        cpu: "0.5"
 
 
 
