@@ -4,8 +4,6 @@ metadata:
   name: es-secure-settings
   namespace: {{ .Values.global.namespace }}
 type: Opaque
-data:
-  xpack.security.authc.realms.file.file1.order: MA==
 
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
@@ -36,6 +34,7 @@ spec:
         node.data: false
         node.ingest: false
         node.store.allow_mmap: false
+        xpack.security.authc.realms.file.file1.order: 0
       podTemplate:
         spec:
           tolerations:
@@ -63,12 +62,13 @@ spec:
             resources:
               requests:
                 storage: {{ .Values.elasticsearch.dataNodes.storage.storage }}
-            storageClassName: gp2
+            storageClassName: {{ .Values.elasticsearch.dataNodes.storage.storageClassName }}
       config:
         node.master: false
         node.data: true
         node.ingest: true
         node.store.allow_mmap: false
+        xpack.security.authc.realms.file.file1.order: 0
       podTemplate:
         spec:
           tolerations:
@@ -96,12 +96,13 @@ spec:
             resources:
               requests:
                 storage: {{ .Values.elasticsearch.ingestNodes.storage.storage }}
-            storageClassName: "gp2"
+            storageClassName: {{ .Values.elasticsearch.ingestNodes.storage.storageClassName }}
       config:
         node.master: false
         node.data: false
         node.ingest: true
         node.store.allow_mmap: false
+        xpack.security.authc.realms.file.file1.order: 0
       podTemplate:
         spec:
           tolerations:

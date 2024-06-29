@@ -24,7 +24,7 @@ curl -L -o charts/eck-operator-2.9.0.tgz https://helm.elastic.co/helm/eck-operat
 ```
 
 ```shell
-create namespace ondc-prod-prod
+kubectl create namespace ondc-prod-prod
 ```
 
 ```shell
@@ -46,3 +46,13 @@ to update the values
 ```shell
  helm upgrade ondc-buyer-app-release . -f values.yaml --namespace ondc-prod-prod
 ```
+
+dscribe crd
+```shell
+kubectl describe mongodbcommunity --namespace ondc-prod-prod
+```
+
+mongosh "mongodb+srv://my-user:password@example-mongodb-svc.mongodb.svc.cluster.local/admin?ssl=true"
+
+kubectl get secret example-mongodb-admin-my-user -n ondc-prod-prod \
+-o json | jq -r '.data | with_entries(.value |= @base64d)'

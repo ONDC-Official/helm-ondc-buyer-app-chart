@@ -9,7 +9,7 @@ spec:
   version: {{ .Values.mongodb.version }}
   security:
     authentication:
-      modes: [ "SCRAM" ]
+      modes: ["SCRAM"]
   users:
     - name: my-mongodb-admin
       roles:

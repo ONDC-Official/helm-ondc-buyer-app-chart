@@ -86,6 +86,8 @@ mongodb:
   fullnameOverride: community-operator
   replicaCount: 1
   password: "password"
+  port: "27018"
+  nodeport: "30018"
   image:
     repository: "mongo"
     tag: "6.0.5"
@@ -93,11 +95,11 @@ mongodb:
     size: "100Gi"
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "100m"
+      memory: "2Gi"
+      cpu: "500m"
     limits:
-      memory: "512Mi"
-      cpu: "200m"
+      memory: "2Gi"
+      cpu: "500m"
 
 redis:
   enabled: true
@@ -137,6 +139,7 @@ rabbitmq:
       cpu: "200m"
   persistence:
     storage: "100Gi"
+    storageClassName: "standard-rwo"
 
 
 elasticsearch:
@@ -149,7 +152,7 @@ elasticsearch:
   masterNodes:
     storage:
       storage: "100Gi"
-      storageClassName: "gp2"
+      storageClassName: "standard-rwo"
     resources:
       requests:
         memory: "2Gi"
@@ -160,7 +163,7 @@ elasticsearch:
   dataNodes:
     storage:
       storage: "500Gi"
-      storageClassName: "gp2"
+      storageClassName: "standard-rwo"
     resources:
       requests:
         memory: "2Gi"
@@ -172,6 +175,7 @@ elasticsearch:
   ingestNodes:
     storage:
       storage: "100Gi"
+      storageClassName: "standard-rwo"
     resources:
       requests:
         memory: "2Gi"
@@ -184,3 +188,4 @@ elasticsearch:
 
 global:
   namespace: "ondc-prod-prod"
+  storageClass: "standard-rwo"

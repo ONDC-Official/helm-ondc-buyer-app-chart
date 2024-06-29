@@ -18,7 +18,7 @@ spec:
       disk_free_limit.relative = 1.0
       collect_statistics_interval = 10000
   persistence:
-    storageClassName: "gp2"
+    storageClassName: {{ .Values.rabbitmq.persistence.storageClassName }}
     storage: {{ .Values.rabbitmq.persistence.storage }}
   affinity:
     podAntiAffinity:
