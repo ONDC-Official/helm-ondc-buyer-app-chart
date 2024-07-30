@@ -155,10 +155,17 @@ elasticsearch:
       storageClassName: "standard-rwo"
     resources:
       requests:
-        memory: "2Gi"
+        memory: "5Gi"
         cpu: "0.5"
       limits:
-        memory: "2Gi"
+        memory: "5Gi"
+        cpu: "0.5"
+    java_resources:
+      requests:
+        memory: "4G"
+        cpu: "0.5"
+      limits:
+        memory: "4G"
         cpu: "0.5"
   dataNodes:
     storage:
@@ -166,11 +173,19 @@ elasticsearch:
       storageClassName: "standard-rwo"
     resources:
       requests:
-        memory: "2Gi"
+        memory: "3Gi"
         cpu: "0.5"
       limits:
-        memory: "2Gi"
+        memory: "3Gi"
         cpu: "0.5"
+    java_resources:
+      requests:
+        memory: "2G"
+        cpu: "0.5"
+      limits:
+        memory: "2G"
+        cpu: "0.5"
+
   ingestNodesCount: 1
   ingestNodes:
     storage:
@@ -178,10 +193,17 @@ elasticsearch:
       storageClassName: "standard-rwo"
     resources:
       requests:
-        memory: "2Gi"
+        memory: "3Gi"
         cpu: "0.5"
       limits:
-        memory: "2Gi"
+        memory: "3Gi"
+        cpu: "0.5"
+    java_resources:
+      requests:
+        memory: "2G"
+        cpu: "0.5"
+      limits:
+        memory: "2G"
         cpu: "0.5"
 
 

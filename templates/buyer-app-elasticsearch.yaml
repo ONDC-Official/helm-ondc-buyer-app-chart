@@ -34,7 +34,7 @@ spec:
         node.data: false
         node.ingest: false
         node.store.allow_mmap: false
-        xpack.security.authc.realms.file.file1.order: 0
+        xpack.security.enabled: false
       podTemplate:
         spec:
           tolerations:
@@ -44,6 +44,9 @@ spec:
               effect: "NoSchedule"
           containers:
             - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: "-Xms{{ .Values.elasticsearch.masterNodes.java_resources.requests.memory }} -Xmx{{ .Values.elasticsearch.masterNodes.java_resources.requests.memory }}"
               resources:
                 requests:
                   memory: {{ .Values.elasticsearch.masterNodes.resources.requests.memory }}
@@ -68,7 +71,7 @@ spec:
         node.data: true
         node.ingest: true
         node.store.allow_mmap: false
-        xpack.security.authc.realms.file.file1.order: 0
+        xpack.security.enabled: false
       podTemplate:
         spec:
           tolerations:
@@ -78,6 +81,9 @@ spec:
               effect: "NoSchedule"
           containers:
             - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: "-Xms{{ .Values.elasticsearch.dataNodes.java_resources.requests.memory }} -Xmx{{ .Values.elasticsearch.dataNodes.java_resources.requests.memory }}"
               resources:
                 requests:
                   memory: {{ .Values.elasticsearch.dataNodes.resources.requests.memory }}
@@ -102,7 +108,7 @@ spec:
         node.data: false
         node.ingest: true
         node.store.allow_mmap: false
-        xpack.security.authc.realms.file.file1.order: 0
+        xpack.security.enabled: false
       podTemplate:
         spec:
           tolerations:
@@ -112,6 +118,9 @@ spec:
               effect: "NoSchedule"
           containers:
             - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: "-Xms{{ .Values.elasticsearch.ingestNodes.java_resources.requests.memory }} -Xmx{{ .Values.elasticsearch.ingestNodes.java_resources.requests.memory }}"
               resources:
                 requests:
                   memory: {{ .Values.elasticsearch.ingestNodes.resources.requests.memory }}
