@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-catalog-service'
+  labels:
+    katenary.io/component: catalog-service
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: catalog-service
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: catalog-service
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      containers:
+        - name: catalog-service
+          image: '{{ .Values.catalog_service.repository.image }}{{ if ne .Values.catalog_service.repository.tag "" }}:{{ .Values.catalog_service.repository.tag }}{{ end }}'
+          ports:
+            - name: pyport
+              containerPort: 5555
+          env:
+            - name: RABBITMQ_HOST
+              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_HOST . }}'
+            - name: RABBITMQ_USERNAME
+              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_USERNAME . }}'
+            - name: RABBITMQ_PASSWORD
+              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_PASSWORD . }}'
+            - name: BHASHINI_ULCA_API_KEY
+              value: '{{ tpl .Values.catalog_service.environment.BHASHINI_ULCA_API_KEY . }}'
+            - name: BHASHINI_USERID
+              value: '{{ tpl .Values.catalog_service.environment.BHASHINI_USERID . }}'
+            - name: MONGO_DATABASE_URL
+              value: '{{ tpl .Values.catalog_service.environment.MONGO_DATABASE_URL . }}'
+            - name: ENV
+              value: '{{ tpl .Values.catalog_service.environment.ENV . }}'
+            - name: LANGUAGE_LIST
+              value: '{{ tpl .Values.catalog_service.environment.LANGUAGE_LIST . }}'
+            - name: CONSUMER_MAX_WORKERS
+              value: '{{ tpl .Values.catalog_service.environment.CONSUMER_MAX_WORKERS . }}'
+            - name: BULK_CHUNK_SIZE
+              value: '{{ tpl .Values.catalog_service.environment.BULK_CHUNK_SIZE . }}'
+            - name: ELASTIC_SEARCH_URL
+              value: '{{ tpl .Values.catalog_service.environment.ELASTIC_SEARCH_URL . }}'
+

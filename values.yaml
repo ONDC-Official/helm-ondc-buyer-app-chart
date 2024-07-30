@@ -46,22 +46,45 @@
 #    tag: ""
 py_ondc_protocol:
   environment:
-    BAP_ID: ""
-    BAP_PRIVATE_KEY: ""
-    BAP_PUBLIC_KEY: ""
-    BAP_UNIQUE_KEY_ID: ""
-    BAP_URL: ""
-    CLIENT_WEBHOOK_ENDPOINT: ""
-    ENV: ""
-    EXPECTED_RESPONSE_TIME: ""
+    BAP_ID: "ref-app-buyer-staging-v2.ondc.org"
+    BAP_PRIVATE_KEY: "BAP_PRIVATE_KEY" # TODO - add in secret
+    BAP_PUBLIC_KEY: "BAP_PUBLIC_KEY" # TODO - add in secret
+    BAP_UNIQUE_KEY_ID: "BAP_UNIQUE_KEY_ID" # TODO - add in secret
+    BAP_URL: "https://ref-app-buyer-staging-v2.ondc.org/protocol/v1"
+    REGISTRY_BASE_URL: "https://staging.registry.ondc.org"
+    CLIENT_WEBHOOK_ENDPOINT: "https://ref-app-buyer-staging-v2.ondc.org/clientApis/response"
+    ENV: "dev"
+    EXPECTED_RESPONSE_TIME: "PT1H"
     FLASK_SERVER: "True"
-    MONGO_DATABASE_URL: ""
-    QUEUE_ENABLE: "True"
-    RABBITMQ_HOST: ""
-    VERIFICATION_ENABLE: ""
+    MONGO_DATABASE_URL: "MONGO_DATABASE_URL" # TODO - add in secret
+    QUEUE_ENABLE: "False"
+    ELASTIC_SEARCH_QUEUE_ENABLE: "True"
+    RABBITMQ_HOST: "RABBITMQ_HOST" # TODO - add in secret/config
+    RABBITMQ_USERNAME: "RABBITMQ_USERNAME" # TODO - add in secret
+    RABBITMQ_PASSWORD: "RABBITMQ_PASSWORD" # TODO - add in secret
+    VERIFICATION_ENABLE: "False"
+
   repository:
-    image: "navdeep710/py-ondc-protocol"
-    tag: latest
+    image: "public.ecr.aws/l6b3l7s4/ondc-reference-buyer-app"
+    tag: "protocolsvcv1.1"
+
+catalog_service:
+  environment:
+    ENV: "dev"
+    MONGO_DATABASE_URL: "MONGO_DATABASE_URL" # TODO - add in secret
+    RABBITMQ_HOST: "RABBITMQ_HOST" # TODO - add in secret/config
+    RABBITMQ_USERNAME: "RABBITMQ_USERNAME" # TODO - add in secret
+    RABBITMQ_PASSWORD: "RABBITMQ_PASSWORD" # TODO - add in secret
+    ELASTIC_SEARCH_URL: "ELASTIC_SEARCH_URL" # TODO - add in secret/config
+    BHASHINI_ULCA_API_KEY: "" # TODO - add in secret
+    BHASHINI_USERID: "" # TODO - add in secret
+    LANGUAGE_LIST: "" # TODO - add in config
+    CONSUMER_MAX_WORKERS: "5"
+    BULK_CHUNK_SIZE: "100"
+
+  repository:
+    image: "public.ecr.aws/l6b3l7s4/ondc-reference-buyer-app"
+    tag: "catelogsvcv1.3"
 #py-protocol-consumer:
 #  environment:
 #    BAP_ID: ""
@@ -133,10 +156,10 @@ rabbitmq:
   resources:
     requests:
       memory: "256Mi"
-      cpu: "100m"
+      cpu: "500m"
     limits:
       memory: "512Mi"
-      cpu: "200m"
+      cpu: "500m"
   persistence:
     storage: "100Gi"
     storageClassName: "standard-rwo"

@@ -32,6 +32,10 @@ spec:
               value: '{{ tpl .Values.py_ondc_protocol.environment.FLASK_SERVER . }}'
             - name: RABBITMQ_HOST
               value: '{{ tpl .Values.py_ondc_protocol.environment.RABBITMQ_HOST . }}'
+            - name: RABBITMQ_USERNAME
+              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_USERNAME . }}'
+            - name: RABBITMQ_PASSWORD
+              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_PASSWORD . }}'
             - name: EXPECTED_RESPONSE_TIME
               value: '{{ tpl .Values.py_ondc_protocol.environment.EXPECTED_RESPONSE_TIME . }}'
             - name: BAP_ID
@@ -54,4 +58,8 @@ spec:
               value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_PRIVATE_KEY . }}'
             - name: CLIENT_WEBHOOK_ENDPOINT
               value: '{{ tpl .Values.py_ondc_protocol.environment.CLIENT_WEBHOOK_ENDPOINT . }}'
+            - name: REGISTRY_BASE_URL
+              value: '{{ tpl .Values.py_ondc_protocol.environment.REGISTRY_BASE_URL . }}'
+            - name: ELASTIC_SEARCH_QUEUE_ENABLE
+              value: '{{ tpl .Values.py_ondc_protocol.environment.ELASTIC_SEARCH_QUEUE_ENABLE . }}'
 
