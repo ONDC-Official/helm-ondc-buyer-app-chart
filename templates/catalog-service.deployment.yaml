@@ -25,18 +25,69 @@ spec:
             - name: pyport
               containerPort: 5555
           env:
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-mongodb-admin-password
+                  key: password
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: host
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: port
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: database
+            - name: MONGO_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: username
+            - name: MONGO_SSL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: ssl
+            - name: MONGO_REPLICA_SET
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: replica_set
+
             - name: RABBITMQ_HOST
-              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_HOST . }}'
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: host
             - name: RABBITMQ_USERNAME
-              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_USERNAME . }}'
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: username
             - name: RABBITMQ_PASSWORD
-              value: '{{ tpl .Values.catalog_service.environment.RABBITMQ_PASSWORD . }}'
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: password
             - name: BHASHINI_ULCA_API_KEY
-              value: '{{ tpl .Values.catalog_service.environment.BHASHINI_ULCA_API_KEY . }}'
+              valueFrom:
+                secretKeyRef:
+                  name: bhashini-secret
+                  key: ulca_api_key
             - name: BHASHINI_USERID
-              value: '{{ tpl .Values.catalog_service.environment.BHASHINI_USERID . }}'
+              valueFrom:
+                secretKeyRef:
+                  name: bhashini-secret
+                  key: user_id
             - name: MONGO_DATABASE_URL
-              value: '{{ tpl .Values.catalog_service.environment.MONGO_DATABASE_URL . }}'
+              value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@$(MONGO_HOST):$(MONGO_PORT)/$(MONGO_DATABASE)?replicaSet=$(MONGO_REPLICA_SET)&ssl=$(MONGO_SSL)"
             - name: ENV
               value: '{{ tpl .Values.catalog_service.environment.ENV . }}'
             - name: LANGUAGE_LIST
