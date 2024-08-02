@@ -15,4 +15,14 @@ spec:
                 name: es-cluster-es-http
                 port:
                   number: 9200
+    - host: py-protocol.ondcapp.dataorc.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ondc-buyer-app-release-py-ondc-protocol-external
+                port:
+                  number: 5555
 
