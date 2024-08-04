@@ -1,25 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: '{{ .Values.global.namespace }}'
   name: '{{ .Release.Name }}-py-ondc-protocol'
   labels:
-    katenary.io/component: py-ondc-protocol
-    katenary.io/project: '{{ .Chart.Name }}'
-    katenary.io/release: '{{ .Release.Name }}'
-  annotations:
-    katenary.io/docker-compose-sha1: 817e1a57696cf49186bcb8a53d0979b0437f075d
-    katenary.io/version: 2.0.0-beta2
+    app: py-ondc-protocol
 spec:
   replicas: 1
   selector:
     matchLabels:
-      katenary.io/component: py-ondc-protocol
-      katenary.io/release: '{{ .Release.Name }}'
+      app: py-ondc-protocol
   template:
     metadata:
       labels:
-        katenary.io/component: py-ondc-protocol
-        katenary.io/release: '{{ .Release.Name }}'
+        app: py-ondc-protocol
     spec:
       containers:
         - name: py-ondc-protocol
@@ -111,3 +105,17 @@ spec:
             - name: ELASTIC_SEARCH_QUEUE_ENABLE
               value: '{{ tpl .Values.py_ondc_protocol.environment.ELASTIC_SEARCH_QUEUE_ENABLE . }}'
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: '{{ .Values.global.namespace }}'
+  name: '{{ .Release.Name }}-py-ondc-protocol-external'
+spec:
+  selector:
+    app: py-ondc-protocol
+  ports:
+    - protocol: TCP
+      port: 5555
+      targetPort: 5555
+  type: NodePort

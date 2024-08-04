@@ -3,20 +3,16 @@ kind: Deployment
 metadata:
   name: '{{ .Release.Name }}-catalog-service'
   labels:
-    katenary.io/component: catalog-service
-    katenary.io/project: '{{ .Chart.Name }}'
-    katenary.io/release: '{{ .Release.Name }}'
+    app: catalog-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      katenary.io/component: catalog-service
-      katenary.io/release: '{{ .Release.Name }}'
+      app: catalog-service
   template:
     metadata:
       labels:
-        katenary.io/component: catalog-service
-        katenary.io/release: '{{ .Release.Name }}'
+        app: catalog-service
     spec:
       containers:
         - name: catalog-service
@@ -99,3 +95,19 @@ spec:
             - name: ELASTIC_SEARCH_URL
               value: '{{ tpl .Values.catalog_service.environment.ELASTIC_SEARCH_URL . }}'
 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ .Release.Name }}-catalog-service-external'
+  labels:
+    app: catalog-service
+spec:
+  selector:
+    app: catalog-service
+  ports:
+    - protocol: TCP
+      port: 5555
+      targetPort: 5555
+  type: NodePort
