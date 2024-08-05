@@ -1,0 +1,181 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: '{{ .Values.global.namespace }}'
+  name: '{{ .Release.Name }}-node-js-ondc-client'
+  labels:
+    katenary.io/component: node-js-ondc-client
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: node-js-ondc-client
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: node-js-ondc-client
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      containers:
+        - name: node-js-ondc-client
+          image: '{{ .Values.node_js_ondc_client.repository.image }}{{ if ne .Values.node_js_ondc_client.repository.tag "" }}:{{ .Values.node_js_ondc_client.repository.tag }}{{ end }}'
+          ports:
+            - name: pyport
+              containerPort: 3000
+          env:
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-mongodb-admin-password
+                  key: password
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: host
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: port
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: database
+            - name: MONGO_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: username
+            - name: MONGO_SSL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: ssl
+            - name: MONGO_REPLICA_SET
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: replica_set
+
+            - name: JUSPAY_SECRET_KEY_PATH
+              value: '{{ tpl .Values.node_js_ondc_client.environment.JUSPAY_SECRET_KEY_PATH . }}'
+            - name: JUSPAY_BASE_URL
+              value: '{{ tpl .Values.node_js_ondc_client.environment.JUSPAY_BASE_URL . }}'
+            - name: JUSPAY_MERCHANT_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.JUSPAY_MERCHANT_ID . }}'
+            - name: JUSPAY_API_KEY
+              value: '{{ tpl .Values.node_js_ondc_client.environment.JUSPAY_API_KEY . }}'
+            - name: FIREBASE_ADMIN_SERVICE_ACCOUNT
+              value: '{{ tpl .Values.node_js_ondc_client.environment.FIREBASE_ADMIN_SERVICE_ACCOUNT . }}'
+            - name: ONDC_BASE_API_URL
+              value: '{{ tpl .Values.node_js_ondc_client.environment.ONDC_BASE_API_URL . }}'
+            - name: JUSPAY_WEBHOOK_USERNAME
+              value: '{{ tpl .Values.node_js_ondc_client.environment.JUSPAY_WEBHOOK_USERNAME . }}'
+            - name: JUSPAY_WEBHOOK_PASSWORD
+              value: '{{ tpl .Values.node_js_ondc_client.environment.JUSPAY_WEBHOOK_PASSWORD . }}'
+            - name: DOMAIN
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DOMAIN . }}'
+            - name: CITY
+              value: '{{ tpl .Values.node_js_ondc_client.environment.CITY . }}'
+            - name: COUNTRY
+              value: '{{ tpl .Values.node_js_ondc_client.environment.COUNTRY . }}'
+            - name: BAP_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BAP_ID . }}'
+            - name: BAP_URL
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BAP_URL . }}'
+            - name: PROTOCOL_BASE_URL
+              value: '{{ tpl .Values.node_js_ondc_client.environment.PROTOCOL_BASE_URL . }}'
+            - name: DB_CONNECTION_STRING
+              value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@$(MONGO_HOST):$(MONGO_PORT)/$(MONGO_DATABASE)?replicaSet=$(MONGO_REPLICA_SET)&ssl=$(MONGO_SSL)"
+            - name: BAP_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ondc-private-keys
+                  key: buyer_app_staging_key
+            - name: BAP_PUBLIC_KEY
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BAP_PUBLIC_KEY . }}'
+            - name: BAP_UNIQUE_KEY_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BAP_UNIQUE_KEY_ID . }}'
+            - name: REGISTRY_BASE_URL
+              value: '{{ tpl .Values.node_js_ondc_client.environment.REGISTRY_BASE_URL . }}'
+            - name: ENV_TYPE
+              value: '{{ tpl .Values.node_js_ondc_client.environment.ENV_TYPE . }}'
+            - name: BAP_FINDER_FEE_TYPE
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BAP_FINDER_FEE_TYPE . }}'
+            - name: BAP_FINDER_FEE_AMOUNT
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BAP_FINDER_FEE_AMOUNT . }}'
+            - name: SSE_TIMEOUT
+              value: '{{ tpl .Values.node_js_ondc_client.environment.SSE_TIMEOUT . }}'
+            - name: MMI_CLIENT_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.MMI_CLIENT_ID . }}'
+            - name: MMI_CLIENT_SECRET
+              value: '{{ tpl .Values.node_js_ondc_client.environment.MMI_CLIENT_SECRET . }}'
+            - name: AWS_ACCESS_KEY_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.AWS_ACCESS_KEY_ID . }}'
+            - name: AWS_SECRET_ACCESS_KEY
+              value: '{{ tpl .Values.node_js_ondc_client.environment.AWS_SECRET_ACCESS_KEY . }}'
+            - name: S3_REGION
+              value: '{{ tpl .Values.node_js_ondc_client.environment.S3_REGION . }}'
+            - name: S3_BUCKET
+              value: '{{ tpl .Values.node_js_ondc_client.environment.S3_BUCKET . }}'
+            - name: RAZORPAY_KEY_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.RAZORPAY_KEY_ID . }}'
+            - name: RAZORPAY_KEY_SECRET
+              value: '{{ tpl .Values.node_js_ondc_client.environment.RAZORPAY_KEY_SECRET . }}'
+            - name: RAZORPAY_WEBHOOK_SECRET
+              value: '{{ tpl .Values.node_js_ondc_client.environment.RAZORPAY_WEBHOOK_SECRET . }}'
+            - name: BHASHINI_REDIS_PORT
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BHASHINI_REDIS_PORT . }}'
+            - name: BHASHINI_USERID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BHASHINI_USERID . }}'
+            - name: BHASHINI_ULCA_API_KEY
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BHASHINI_ULCA_API_KEY . }}'
+            - name: DLT_CUSTOMER_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DLT_CUSTOMER_ID . }}'
+            - name: DLT_ENTITY_ID
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DLT_ENTITY_ID . }}'
+            - name: DLT_USERNAME
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DLT_USERNAME . }}'
+            - name: DLT_PASSWORD
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DLT_PASSWORD . }}'
+            - name: DLT_SOURCE
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DLT_SOURCE . }}'
+            - name: DLT_MESSAGE_TYPE
+              value: '{{ tpl .Values.node_js_ondc_client.environment.DLT_MESSAGE_TYPE . }}'
+            - name: CORS_WHITELIST_URLS
+              value: '{{ tpl .Values.node_js_ondc_client.environment.CORS_WHITELIST_URLS . }}'
+            - name: ELASTIC_SEARCH_URL
+              value: '{{ tpl .Values.node_js_ondc_client.environment.ELASTIC_SEARCH_URL . }}'
+            - name: PORT
+              value: '{{ tpl .Values.node_js_ondc_client.environment.PORT . }}'
+            - name: NODE_DEV
+              value: '{{ tpl .Values.node_js_ondc_client.environment.NODE_DEV . }}'
+            - name: S3_VERSION
+              value: '{{ tpl .Values.node_js_ondc_client.environment.S3_VERSION . }}'
+            - name: BHASHINI_REDIS_HOST
+              value: '{{ tpl .Values.node_js_ondc_client.environment.BHASHINI_REDIS_HOST . }}'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: '{{ .Values.global.namespace }}'
+  name: '{{ .Release.Name }}-node-js-ondc-client-external'
+  labels:
+    katenary.io/component: node-js-ondc-client-external
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+spec:
+  selector:
+    katenary.io/component: node-js-ondc-client
+    katenary.io/release: '{{ .Release.Name }}'
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort

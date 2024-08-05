@@ -63,10 +63,20 @@ kubectl get secret example-mongodb-admin-my-user -n ondc-prod-prod \
 -o json | jq -r '.data | with_entries(.value |= @base64d)'
 ```
 
+use set for following values
+
+JUSPAY_WEBHOOK_PASSWORD
+MMI_CLIENT_SECRET
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+RAZORPAY_KEY_SECRET
+RAZORPAY_WEBHOOK_SECRET
+BHASHINI_ULCA_API_KEY
+DLT_PASSWORD
 # We have makefile to install the helm chart
 One time make install
 ```shell
-make helm-dep-up
+make helm-dep-up 
 ```
 
 Make upgrade
