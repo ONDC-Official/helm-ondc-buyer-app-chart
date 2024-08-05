@@ -3,20 +3,23 @@
 # run helm dep up on all charts
 
 helm-dep-up:
-	# this is to be run only once
-	# move all templates files to temp_templates
-	mv templates templates_back
-	# take input of namespace
 	@read -p "Enter namespace: " namespace; \
-	helm install ondc-buyer-app-release . -f values.yaml --namespace $$namespace
-	# move all templates files to temp_templates
-	mv templates_back templates
-	# run helm install on all charts
-	helm upgrade --install ondc-logging-webserver-release . -f values.yaml --namespace $$namespace
+	echo "Installing crds first"; \
+	cd crds && helm install ondc-buyer-app-release . -f values.yaml --namespace $$namespace
+	echo "Installing databases"; \
+	cd ../databases && helm install ondc-buyer-app-dbs-release . -f values.yaml --namespace $$namespace
+	echo "Installing logging"; \
+	cd ../services && helm install ondc-buyer-app-services-release . -f values.yaml --namespace $$namespace
 
-helm-upgrade:
-	helm upgrade --install ondc-logging-webserver-release . -f values.yaml --namespace $$namespace
+
+helm-upgrade-service:
+	cd services && helm upgrade --install ondc-buyer-app-services-release . -f values.yaml --namespace $$namespace
 
 helm-uninstall:
 	@read -p "Enter namespace: " namespace; \
-	helm uninstall ondc-logging-webserver-release --namespace $$namespace
+	echo "Uninstalling services first"; \
+	cd services && helm uninstall ondc-buyer-app-services-release --namespace $$namespace
+	echo "Uninstalling databases"; \
+	cd ../databases && helm uninstall ondc-buyer-app-dbs-release --namespace $$namespace
+	echo "Uninstalling crds"; \
+	cd ../crds && helm uninstall ondc-buyer-app-release --namespace $$namespace

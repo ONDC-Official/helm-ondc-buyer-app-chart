@@ -1,0 +1,37 @@
+# daily cron for full catalog cron
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: '{{ .Values.global.namespace }}'
+  name: '{{ .Release.Name }}-catalog-clean-cron'
+spec:
+  schedule: "30 14 * * *"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 6
+  suspend: false
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 36000
+      backoffLimit: 5
+      template:
+        spec:
+          containers:
+            - name: catalog-clean-cron
+              image: '{{ (lookup "v1" "ConfigMap" .Values.global.namespace "catalog-clean-cron-version-config").data.image_tag }}'
+              imagePullPolicy: IfNotPresent
+              resources:
+                requests:
+                  memory: "6Gi"
+                  cpu: "2"
+                limits:
+                  memory: "6Gi"
+                  cpu: "2"
+              env:
+                - name: ENV
+                  value: '{{ tpl .Values.catalog_service.environment.ENV . }}'
+                - name: ELASTIC_SEARCH_URL
+                  value: '{{ tpl .Values.catalog_service.environment.ELASTIC_SEARCH_URL . }}'
+                - name: TTL_IN_DAYS
+                  value: '5'
+
+          restartPolicy: OnFailure

@@ -1,0 +1,8 @@
+# Create on 2024-05-07T08:38:21Z
+# Katenary command line: katenary convert -c docker-compose.yml
+apiVersion: v2
+appVersion: 0.0.1
+description: A helm chart for buyer app
+name: ondc_buyer_app
+type: application
+version: 0.1.0

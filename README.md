@@ -1,3 +1,4 @@
+### 1. Add helm repo
 ```shell
 helm repo add mongodb https://mongodb.github.io/helm-charts
 helm repo add spotahome https://spotahome.github.io/redis-operator
@@ -10,8 +11,9 @@ helm repo add elastic https://helm.elastic.co/
 helm repo update
 ```
 
-### 3. Install helm
+### 3. Install helm for CRDs
 ```shell
+cd crds
 helm install ondc-buyer-app-release . -f values.yaml --namespace ondc-buyer-app-pre-prod
 ``` 
 if above does not work, we will try to bring all the charts locally and then install
@@ -23,6 +25,22 @@ curl -L -o charts/rabbitmq-cluster-operator-4.3.1.tgz https://charts.bitnami.com
 curl -L -o charts/eck-operator-2.9.0.tgz https://helm.elastic.co/helm/eck-operator/eck-operator-2.9.0.tgz
 ```
 
+### 4. Install helm for Databases
+```shell
+cd ../databases
+kubectl apply -f config_maps
+helm install ondc-buyer-app-dbs-release . -f values.yaml --namespace ondc-buyer-app-pre-prod
+```
+
+### 4. Install helm for Services
+```shell
+cd ../services
+kubectl apply -f config_maps/
+# create secrets folder using sample-secrets and update values in it
+kubectl apply -f secrets/
+helm install ondc-buyer-app-services-release . -f values.yaml --namespace ondc-buyer-app-pre-prod
+```
+
 ```shell
 kubectl create namespace ondc-prod-prod
 ```
@@ -30,6 +48,8 @@ kubectl create namespace ondc-prod-prod
 ```shell
 # uninstall
 helm uninstall ondc-buyer-app-release --namespace ondc-prod-prod
+helm uninstall ondc-buyer-app-dbs-release --namespace ondc-prod-prod
+helm uninstall ondc-buyer-app-services-release --namespace ondc-prod-prod
 ```
 
 ```shell
@@ -42,9 +62,10 @@ kubectl create secret generic my-mongodb-scram-credentials -n ondc-prod-prod \
   --from-literal=scram-sha-256-salt='cGFzc3dvcmQ='
 ```
 
-to update the values
+to update the values for services
 ```shell
- helm upgrade ondc-buyer-app-release . -f values.yaml --namespace ondc-prod-prod
+cd services
+helm upgrade ondc-buyer-app-services-release . -f values.yaml --namespace ondc-prod-prod
 ```
 
 dscribe crd

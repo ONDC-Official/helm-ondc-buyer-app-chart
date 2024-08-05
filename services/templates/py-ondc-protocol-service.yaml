@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: '{{ .Values.global.namespace }}'
+  name: '{{ .Release.Name }}-py-ondc-protocol'
+  labels:
+    app: py-ondc-protocol
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: py-ondc-protocol
+  template:
+    metadata:
+      labels:
+        app: py-ondc-protocol
+    spec:
+      containers:
+        - name: py-ondc-protocol
+          image: '{{ (lookup "v1" "ConfigMap" .Values.global.namespace "py-protocol-version-config").data.image_tag }}'
+          ports:
+            - name: pyport
+              containerPort: 5555
+          env:
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-mongodb-admin-password
+                  key: password
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: host
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: port
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: database
+            - name: MONGO_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: username
+            - name: MONGO_SSL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: ssl
+            - name: MONGO_REPLICA_SET
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-admin-config
+                  key: replica_set
+
+            - name: FLASK_SERVER
+              value: '{{ tpl .Values.py_ondc_protocol.environment.FLASK_SERVER . }}'
+            - name: RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: host
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: password
+            - name: EXPECTED_RESPONSE_TIME
+              value: '{{ tpl .Values.py_ondc_protocol.environment.EXPECTED_RESPONSE_TIME . }}'
+            - name: BAP_ID
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_ID . }}'
+            - name: BAP_UNIQUE_KEY_ID
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_UNIQUE_KEY_ID . }}'
+            - name: QUEUE_ENABLE
+              value: '{{ tpl .Values.py_ondc_protocol.environment.QUEUE_ENABLE . }}'
+            - name: VERIFICATION_ENABLE
+              value: '{{ tpl .Values.py_ondc_protocol.environment.VERIFICATION_ENABLE . }}'
+            - name: BAP_PUBLIC_KEY
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_PUBLIC_KEY . }}'
+            - name: BAP_URL
+              value: '{{ tpl .Values.py_ondc_protocol.environment.BAP_URL . }}'
+            - name: MONGO_DATABASE_URL
+              value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@$(MONGO_HOST):$(MONGO_PORT)/$(MONGO_DATABASE)?replicaSet=$(MONGO_REPLICA_SET)&ssl=$(MONGO_SSL)"
+            - name: ENV
+              value: '{{ tpl .Values.py_ondc_protocol.environment.ENV . }}'
+            - name: BAP_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ondc-private-keys
+                  key: buyer_app_private_key
+            - name: CLIENT_WEBHOOK_ENDPOINT
+              value: '{{ tpl .Values.py_ondc_protocol.environment.CLIENT_WEBHOOK_ENDPOINT . }}'
+            - name: REGISTRY_BASE_URL
+              value: '{{ tpl .Values.py_ondc_protocol.environment.REGISTRY_BASE_URL . }}'
+            - name: ELASTIC_SEARCH_QUEUE_ENABLE
+              value: '{{ tpl .Values.py_ondc_protocol.environment.ELASTIC_SEARCH_QUEUE_ENABLE . }}'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: '{{ .Values.global.namespace }}'
+  name: '{{ .Release.Name }}-py-ondc-protocol-external'
+spec:
+  selector:
+    app: py-ondc-protocol
+  ports:
+    - protocol: TCP
+      port: 5555
+      targetPort: 5555
+  type: NodePort

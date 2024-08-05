@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-service-version-config
+  namespace: ondc-prod-prod
+data:
+  image_tag: "public.ecr.aws/l6b3l7s4/ondc-reference-buyer-app:frontendsvcv1.4"

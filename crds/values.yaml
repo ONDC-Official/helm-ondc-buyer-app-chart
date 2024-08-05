@@ -1,0 +1,3 @@
+global:
+  namespace: "ondc-prod-prod"
+  storageClass: "standard-rwo"

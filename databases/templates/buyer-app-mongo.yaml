@@ -1,0 +1,46 @@
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: {{ .Values.mongodb.name }}
+  namespace: {{ .Values.global.namespace }}
+spec:
+  members: {{ .Values.mongodb.replicaCount }}
+  type: ReplicaSet
+  version: {{ .Values.mongodb.version }}
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: my-mongodb-admin
+      db: admin
+      roles:
+        - name: dbAdmin
+          db: admin
+        - name: readWrite
+          db: sandbox_bap
+        - name: readWrite
+          db: admin
+      passwordSecretRef:
+        name: my-mongodb-admin-password
+      scramCredentialsSecretName: my-mongodb-admin-scram
+  statefulSet:
+    spec:
+      serviceName: {{ .Values.mongodb.name }}
+      volumeClaimTemplates:
+        - metadata:
+            name: data-volume
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: {{ .Values.mongodb.storage.size }}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-mongodb-admin-password
+  namespace: {{ .Values.global.namespace }}
+type: Opaque
+stringData:
+  password: "adminpassword"

@@ -1,0 +1,120 @@
+mongodb:
+  enabled: true
+  name: "buyer-app-mongodb"
+  namespace: "ondc-prod-prod"
+  version: "6.0.5"
+  # Configuration for MongoDB operator
+  fullnameOverride: community-operator
+  replicaCount: 3
+  port: "27017"
+  nodeport: "30017"
+  image:
+    repository: "mongo"
+    tag: "6.0.5"
+  storage:
+    size: "100Gi"
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "1"
+    limits:
+      memory: "8Gi"
+      cpu: "2"
+
+redis:
+  enabled: true
+  namespace: "ondc-prod-prod"
+  # Configuration for Redis operator
+  fullnameOverride: redis-operator
+  replicas: 1
+  sentinel:
+    replicas: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+rabbitmq:
+  enabled: false
+  # Configuration for RabbitMQ operator
+  fullnameOverride: rabbitmq-cluster-operator
+  namespace: "ondc-prod-prod"
+  replicas: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  persistence:
+    storage: "100Gi"
+    storageClassName: "standard-rwo"
+
+elasticsearch:
+  enabled: true
+  fullnameOverride: elastic-operator
+  version: "8.8.0"
+  masterNodesCount: 1
+  dataNodesCount: 1
+  masterNodes:
+    storage:
+      storage: "100Gi"
+      storageClassName: "standard-rwo"
+    resources:
+      requests:
+        memory: "5Gi"
+        cpu: "0.5"
+      limits:
+        memory: "5Gi"
+        cpu: "0.5"
+    java_resources:
+      requests:
+        memory: "4G"
+        cpu: "0.5"
+      limits:
+        memory: "4G"
+        cpu: "0.5"
+  dataNodes:
+    storage:
+      storage: "500Gi"
+      storageClassName: "standard-rwo"
+    resources:
+      requests:
+        memory: "3Gi"
+        cpu: "0.5"
+      limits:
+        memory: "3Gi"
+        cpu: "0.5"
+    java_resources:
+      requests:
+        memory: "2G"
+        cpu: "0.5"
+      limits:
+        memory: "2G"
+        cpu: "0.5"
+  ingestNodesCount: 1
+  ingestNodes:
+    storage:
+      storage: "100Gi"
+      storageClassName: "standard-rwo"
+    resources:
+      requests:
+        memory: "3Gi"
+        cpu: "0.5"
+      limits:
+        memory: "3Gi"
+        cpu: "0.5"
+    java_resources:
+      requests:
+        memory: "2G"
+        cpu: "0.5"
+      limits:
+        memory: "2G"
+        cpu: "0.5"
+global:
+  namespace: "ondc-prod-prod"
+  storageClass: "standard-rwo"

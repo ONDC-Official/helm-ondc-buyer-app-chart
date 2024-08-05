@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: es-secure-settings
+  namespace: {{ .Values.global.namespace }}
+type: Opaque
+
+---
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: es-cluster
+spec:
+  version: {{ .Values.elasticsearch.version }}
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  nodeSets:
+    - name: master-nodes
+      count: {{ .Values.elasticsearch.masterNodesCount }}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.masterNodes.storage.storage }}
+            storageClassName: {{ .Values.elasticsearch.masterNodes.storage.storageClassName }}
+      config:
+        node.roles: [ master ]
+        node.store.allow_mmap: false
+        xpack.security.enabled: false
+      podTemplate:
+        spec:
+          tolerations:
+            - key: "es-cluster"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: "-Xms{{ .Values.elasticsearch.masterNodes.java_resources.requests.memory }} -Xmx{{ .Values.elasticsearch.masterNodes.java_resources.requests.memory }}"
+              resources:
+                requests:
+                  memory: {{ .Values.elasticsearch.masterNodes.resources.requests.memory }}
+                  cpu: {{ .Values.elasticsearch.masterNodes.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.elasticsearch.masterNodes.resources.limits.memory }}
+                  cpu: {{ .Values.elasticsearch.masterNodes.resources.limits.cpu }}
+    - name: data-nodes
+      count: {{ .Values.elasticsearch.dataNodesCount }}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.dataNodes.storage.storage }}
+            storageClassName: {{ .Values.elasticsearch.dataNodes.storage.storageClassName }}
+      config:
+        node.roles: [ data, ingest ]
+        node.store.allow_mmap: false
+        xpack.security.enabled: false
+      podTemplate:
+        spec:
+          tolerations:
+            - key: "es-cluster"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: "-Xms{{ .Values.elasticsearch.dataNodes.java_resources.requests.memory }} -Xmx{{ .Values.elasticsearch.dataNodes.java_resources.requests.memory }}"
+              resources:
+                requests:
+                  memory: {{ .Values.elasticsearch.dataNodes.resources.requests.memory }}
+                  cpu: {{ .Values.elasticsearch.dataNodes.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.elasticsearch.dataNodes.resources.limits.memory }}
+                  cpu: {{ .Values.elasticsearch.dataNodes.resources.limits.cpu }}
+    - name: ingest-nodes
+      count: {{ .Values.elasticsearch.ingestNodesCount }}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.ingestNodes.storage.storage }}
+            storageClassName: {{ .Values.elasticsearch.ingestNodes.storage.storageClassName }}
+      config:
+        node.roles: [ ingest ]
+        node.store.allow_mmap: false
+        xpack.security.enabled: false
+      podTemplate:
+        spec:
+          tolerations:
+            - key: "es-cluster"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: "-Xms{{ .Values.elasticsearch.ingestNodes.java_resources.requests.memory }} -Xmx{{ .Values.elasticsearch.ingestNodes.java_resources.requests.memory }}"
+              resources:
+                requests:
+                  memory: {{ .Values.elasticsearch.ingestNodes.resources.requests.memory }}
+                  cpu: {{ .Values.elasticsearch.ingestNodes.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.elasticsearch.ingestNodes.resources.limits.memory }}
+                  cpu: {{ .Values.elasticsearch.ingestNodes.resources.limits.cpu }}
+  secureSettings:
+    - secretName: es-secure-settings
+
+---

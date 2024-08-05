@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ondc-private-keys
+  namespace: ondc-prod-prod
+type: Opaque
+stringData:
+  buyer_app_private_key: <buyer_app_private_key>

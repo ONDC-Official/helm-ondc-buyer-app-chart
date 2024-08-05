@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ .Values.global.namespace }}
+  name: app-ingress
+spec:
+  rules:
+    - host: elastic.ondcapp.dataorc.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: es-cluster-es-http
+                port:
+                  number: 9200
+    - host: py-protocol.ondcapp.dataorc.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ondc-buyer-app-services-release-py-ondc-protocol-external
+                port:
+                  number: 5555
+    - host: node-js-ondc-client.ondcapp.dataorc.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ondc-buyer-app-services-release-node-js-ondc-client-external
+                port:
+                  number: 3000
+    - host: staging-app.ondcapp.dataorc.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ondc-buyer-app-services-release-frontend-service-external
+                port:
+                  number: 80
+

@@ -1,0 +1,74 @@
+py_ondc_protocol:
+  environment:
+    BAP_ID: "ref-app-buyer-staging-v2.ondc.org"
+    BAP_PUBLIC_KEY: "lPetySkn0oCUkj02pq3Hk7iNtM8/+Hf+V7jJwOcKHSk="
+    BAP_UNIQUE_KEY_ID: "3b7ff621-0f32-46b6-8b51-df1f36602d6b"
+    BAP_URL: "https://buyer-app.ondc.org/protocol/v1"
+    REGISTRY_BASE_URL: "https://staging.registry.ondc.org"
+    CLIENT_WEBHOOK_ENDPOINT: "https://buyer-app.ondc.org/clientApis/response"
+    ENV: "dev"
+    EXPECTED_RESPONSE_TIME: "PT1H"
+    FLASK_SERVER: "True"
+    QUEUE_ENABLE: "False"
+    ELASTIC_SEARCH_QUEUE_ENABLE: "True"
+    VERIFICATION_ENABLE: "False"
+    MONGO_DATABASE_URL: "mongodb://my-mongodb-admin:adminpassword@buyer-app-mongodb-0.buyer-app-mongodb.ondc-prod-prod.svc.cluster.local:27017/?replicaSet=buyer-app-mongodb"
+  repository:
+    image: "public.ecr.aws/l6b3l7s4/ondc-reference-buyer-app"
+    tag: "protocolsvcv1.4"
+
+catalog_service:
+  environment:
+    ENV: "dev"
+    ELASTIC_SEARCH_URL: "http://es-cluster-es-internal-http.ondc-prod-prod.svc.cluster.local:9200"
+    LANGUAGE_LIST: ""
+    CONSUMER_MAX_WORKERS: "5"
+    BULK_CHUNK_SIZE: "100"
+    MONGO_DATABASE_URL: "mongodb://my-mongodb-admin:adminpassword@buyer-app-mongodb-0.buyer-app-mongodb.ondc-prod-prod.svc.cluster.local:27017/?replicaSet=buyer-app-mongodb"
+  repository:
+    image: "public.ecr.aws/l6b3l7s4/ondc-reference-buyer-app"
+    tag: "catalogsvcv1.4"
+
+node_js_ondc_client:
+  environment:
+    FIREBASE_ADMIN_SERVICE_ACCOUNT: "./config/dev/firebase-service-account.json"
+    ONDC_BASE_API_URL: "https://ref-app-buyer-staging-v2.ondc.org"
+    DOMAIN: "nic2004:52110"
+    CITY: "std:080"
+    COUNTRY: "IND"
+    PROTOCOL_BASE_URL: "http://py-protocol.ondcapp.dataorc.in "
+    BAP_ID: "ref-app-buyer-staging-v2.ondc.org"
+    BAP_PUBLIC_KEY: "lPetySkn0oCUkj02pq3Hk7iNtM8/+Hf+V7jJwOcKHSk="
+    BAP_UNIQUE_KEY_ID: "3b7ff621-0f32-46b6-8b51-df1f36602d6b"
+    BAP_URL: "https://ref-app-buyer-staging-v2.ondc.org/protocol/v1"
+    BAP_FINDER_FEE_TYPE: "percent"
+    BAP_FINDER_FEE_AMOUNT: "3.0"
+    PORT: "3000"
+    NODE_DEV: "dev"
+    REGISTRY_BASE_URL: "https://staging.registry.ondc.org"
+    ENV_TYPE: "STAGING"
+    SSE_TIMEOUT: "5000"
+    S3_VERSION: "v4"
+    S3_REGION: "ap-south-1"
+    S3_BUCKET: "reference-buyer-app-assets/public-assets"
+    BHASHINI_REDIS_PORT: "26379"
+    BHASHINI_REDIS_HOST: "34.118.226.20"
+
+    JUSPAY_SECRET_KEY_PATH: "./config/dev/juspay.pem"
+    JUSPAY_BASE_URL: "https://sandbox.juspay.in"
+    JUSPAY_MERCHANT_ID: "ONDC"
+
+    DLT_CUSTOMER_ID: "OPEN_NETWO_M5qy4uvAnJWNhAmihZt8-1"
+    DLT_ENTITY_ID: "1001265305956922411-1"
+    DLT_SOURCE: "ONDCNW-1"
+    DLT_MESSAGE_TYPE: "SERVICE_IMPLICIT-1"
+
+    CORS_WHITELIST_URLS: "https://buyer-app.ondc.org,buyer-app.ondc.org/,http://staging-app.ondcapp.dataorc.in,http://localhost:3000,https://localhost:3000"
+    ELASTIC_SEARCH_URL: "http://es-cluster-es-http.ondc-prod-prod.svc.cluster.local:9200"
+  repository:
+    image: "public.ecr.aws/l6b3l7s4/ondc-reference-buyer-app"
+    tag: "clientsvcv1.1"
+
+global:
+  namespace: "ondc-prod-prod"
+  storageClass: "standard-rwo"
