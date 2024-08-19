@@ -14,7 +14,7 @@ helm repo update
 ```shell
 helm install ondc-buyer-app-release . -f values.yaml --namespace ondc-buyer-app-pre-prod
 ``` 
-
+if above does not work, we will try to bring all the charts locally and then install
 ```shell
 mkdir -p charts
 curl -L -o charts/community-operator-0.9.0.tgz https://github.com/mongodb/helm-charts/releases/download/community-operator-0.9.0/community-operator-0.9.0.tgz
