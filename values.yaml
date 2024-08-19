@@ -158,7 +158,7 @@ elasticsearch:
   enabled: true
   # Configuration for Elasticsearch operator
   fullnameOverride: elastic-operator
-  version: "7.7.0"
+  version: "8.8.0"
   masterNodesCount: 1
   dataNodesCount: 1
   masterNodes:
