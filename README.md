@@ -52,7 +52,28 @@ dscribe crd
 kubectl describe mongodbcommunity --namespace ondc-prod-prod
 ```
 
+Connect to mongo from any pod
+```shell
 mongosh "mongodb+srv://my-user:password@example-mongodb-svc.mongodb.svc.cluster.local/admin?ssl=true"
-
+```
+Get mongo password
+```shell
 kubectl get secret example-mongodb-admin-my-user -n ondc-prod-prod \
 -o json | jq -r '.data | with_entries(.value |= @base64d)'
+```
+
+# We have makefile to install the helm chart
+One time make install
+```shell
+make helm-dep-up
+```
+
+Make upgrade
+```shell
+make helm-upgrade
+```
+
+Make uninstall
+```shell
+make helm-uninstall
+```
