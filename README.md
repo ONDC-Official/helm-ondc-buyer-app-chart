@@ -1,3 +1,4 @@
+### 1. Add helm repo
 ```shell
 helm repo add mongodb https://mongodb.github.io/helm-charts
 helm repo add spotahome https://spotahome.github.io/redis-operator
