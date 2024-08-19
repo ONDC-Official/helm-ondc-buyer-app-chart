@@ -5,7 +5,7 @@ metadata:
   name: app-ingress
 spec:
   rules:
-    - host: elastic.ondcapp.dataorc.in
+    - host: elastic.ondcapp.ondc.org
       http:
         paths:
           - path: /
@@ -15,7 +15,7 @@ spec:
                 name: es-cluster-es-http
                 port:
                   number: 9200
-    - host: py-protocol.ondcapp.dataorc.in
+    - host: py-protocol.ondcapp.ondc.org
       http:
         paths:
           - path: /
